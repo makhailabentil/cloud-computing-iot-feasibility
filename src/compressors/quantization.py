@@ -113,8 +113,10 @@ class QuantizationCompressor:
         
         # Calculate compression ratio
         original_size = len(data) * 8  # Assuming 8 bytes per float
-        compressed_size = len(indices) * (self.n_bits // 8)  # Bits to bytes
-        self.compression_ratio = original_size / compressed_size
+        # Ensure at least 1 byte per quantized value
+        bytes_per_value = max(1, self.n_bits // 8)
+        compressed_size = len(indices) * bytes_per_value
+        self.compression_ratio = original_size / compressed_size if compressed_size > 0 else 1.0
         
         metadata = {
             'quantization_levels': self.quantization_levels,

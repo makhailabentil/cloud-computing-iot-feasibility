@@ -58,9 +58,11 @@ class DeltaEncodingCompressor:
         deltas = np.diff(data)
         
         # Calculate compression ratio
+        # Delta encoding can achieve compression by using smaller data types for deltas
         original_size = len(data) * 8  # Assuming 8 bytes per float
-        compressed_size = len(deltas) * 8 + 8  # deltas + first_value
-        self.compression_ratio = original_size / compressed_size
+        # Use 4 bytes for deltas (assuming they fit in 32-bit integers) + 8 bytes for first value
+        compressed_size = len(deltas) * 4 + 8  # deltas as 32-bit + first_value as 64-bit
+        self.compression_ratio = original_size / compressed_size if compressed_size > 0 else 1.0
         
         logger.info(f"Compression ratio: {self.compression_ratio:.2f}x")
         

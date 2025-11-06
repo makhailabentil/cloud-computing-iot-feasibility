@@ -13,8 +13,8 @@ import numpy as np
 import pandas as pd
 import time
 
-# Add src to path for imports
-sys.path.append(str(Path(__file__).parent / "src"))
+# Add src to path for imports (scripts/ is one level deeper than root)
+sys.path.append(str(Path(__file__).parent.parent / "src"))
 
 from compressors.delta_encoding import DeltaEncodingCompressor, generate_synthetic_data
 from compressors.run_length import RunLengthCompressor, generate_repetitive_data
@@ -244,3 +244,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

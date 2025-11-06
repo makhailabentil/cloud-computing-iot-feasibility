@@ -28,33 +28,38 @@ We evaluated two candidate datasets:
 
 ## Implementation Status
 
-### Completed
+### Milestone 1 - ✅ COMPLETE
 - [x] Literature review and dataset selection
 - [x] Repository setup with Python environment
 - [x] Basic project structure
-- [x] Delta encoding compressor prototype (2x compression)
+- [x] Delta encoding compressor (2x compression, perfect reconstruction)
+- [x] Run-length encoding compressor
+- [x] Quantization compressor (8x compression, minimal quality loss)
 - [x] CSV sensor trace replay scripts
-- [x] Run length and quantization compressors
 - [x] Edge gateway implementation
 - [x] Comprehensive test suite (15/15 tests passing)
 - [x] Demo script with working examples
 
-### Milestone 2 Progress
+See `docs/MILESTONE1.md` for complete Milestone 1 documentation.
+
+### Milestone 2 - ✅ COMPLETE
 - [x] CAPTURE-24 data loader implementation
 - [x] Systematic evaluation framework
 - [x] Data segmentation utilities
 - [x] Resource consumption monitoring (memory, CPU)
 - [x] Evaluation script for CAPTURE-24 data
-- [x] Run evaluation on CAPTURE-24 dataset segments (180 segments evaluated)
-- [x] Generate comprehensive performance report
-- [x] **MILESTONE 2 COMPLETE** - See `MILESTONE2_EVALUATION_RESULTS.md` for results
+- [x] **Full evaluation on all 151 participants** (4,530 evaluations completed)
+- [x] Comprehensive performance report generated
+- [x] Real CAPTURE-24 dataset processed and evaluated
+- [x] **MILESTONE 2 COMPLETE** - See `docs/MILESTONE2.md` for complete documentation
 
-### Next Steps (Next 2 Weeks)
-1. Download and prepare CAPTURE 24 dataset
-2. Run systematic evaluation on CAPTURE 24 data segments
-3. Compare performance across all three compression algorithms
-4. Generate comprehensive performance report
-5. Prepare for hybrid compression methods (Milestone 3)
+**Key Achievement**: Successfully evaluated all three compression algorithms on the complete CAPTURE-24 dataset, revealing critical insights about algorithm performance on real-world accelerometer data.
+
+### Milestone 3 - 🎯 Next Steps
+1. **Benchmark Edge Performance**: Measure CPU, memory, and energy consumption on IoT hardware
+2. **Activity-Aware Adaptive Compression**: Develop adaptive compression that switches algorithms based on activity type
+3. **Multi-Axis Compression Strategies**: Optimize compression for triaxial accelerometer data (x, y, z)
+4. **Final Performance Evaluation Report**: Produce comprehensive report with hybrid compression and on-the-fly analytics
 
 ## Project Structure
 
@@ -62,9 +67,13 @@ We evaluated two candidate datasets:
 ├── README.md
 ├── requirements.txt
 ├── scripts/
-│   ├── demo.py                   # Milestone 1: Demo script
-│   ├── evaluate_capture24.py      # Milestone 2: Main evaluation script
-│   └── download_capture24.py     # CAPTURE-24 dataset download script
+│   ├── demo.py                      # Milestone 1: Demo script
+│   ├── evaluate_capture24.py       # Milestone 2: Main evaluation script
+│   ├── evaluate_all_participants.py # Milestone 2: Full-scale evaluation
+│   ├── download_capture24.py       # CAPTURE-24 dataset download helper
+│   ├── get_real_capture24_data.py  # Data conversion utility
+│   ├── compare_results.py          # Results comparison tool
+│   └── get_detailed_stats.py       # Statistics extraction
 ├── src/
 │   ├── compressors/
 │   │   ├── delta_encoding.py
@@ -127,33 +136,59 @@ python src/edge_gateway/gateway.py
 ### CAPTURE-24 Dataset Evaluation (Milestone 2)
 
 ```bash
-# Download CAPTURE-24 dataset (optional - manual download recommended)
-python scripts/download_capture24.py
+# Download and convert CAPTURE-24 dataset
+python scripts/get_real_capture24_data.py
 
-# Run systematic evaluation on synthetic CAPTURE-24 data
-python scripts/evaluate_capture24.py --synthetic --participants P001 --max-segments 10
+# Run evaluation on specific participants
+python scripts/evaluate_capture24.py --participants P001,P002 --max-segments 10
 
-# Run evaluation on real CAPTURE-24 data (after downloading)
-python scripts/evaluate_capture24.py --participants P001,P002 --max-segments 10 --axes x,y,z
+# Run full evaluation on all 151 participants (takes several hours)
+python scripts/evaluate_all_participants.py --start 1 --end 151 --max-segments 10
 
 # Evaluate with custom window size (100 seconds = 10000 samples at 100Hz)
-python scripts/evaluate_capture24.py --synthetic --participants P001 --window-size 10000 --max-segments 5
+python scripts/evaluate_capture24.py --participants P001 --window-size 10000 --max-segments 5
+
+# Compare synthetic vs. real data results
+python scripts/compare_results.py
+
+# Get detailed statistics from evaluation results
+python scripts/get_detailed_stats.py
 ```
 
 **Note**: The CAPTURE-24 dataset must be downloaded manually from:
 https://ora.ox.ac.uk/objects/uuid:99d7c092-d865-4a19-b096-cc16440cd001
 
-After downloading, extract the data to `data/capture24/` with participant files named as `P001.csv`, `P002.csv`, etc.
-Each CSV should contain columns: `timestamp`, `x`, `y`, `z` (or similar accelerometer column names).
+After downloading, use `scripts/get_real_capture24_data.py` to convert the `.csv.gz` files to plain CSV format in `data/capture24/`.
 
 ## Results
 
-Current compression performance on synthetic data:
-- **Delta Encoding**: 2× compression with perfect reconstruction
-- **Run Length Encoding**: 1.08× compression (varies by data patterns)
-- **Quantization (8-bit)**: 8× compression with minimal quality loss (SNR: 47-62 dB)
-- **Processing Speed**: All algorithms complete in milliseconds
-- **Data Integrity**: All algorithms maintain data integrity (except quantization by design)
+### Milestone 2: Full CAPTURE-24 Evaluation (All 151 Participants)
+
+**Evaluation Scope**: 4,530 evaluations across 151 participants, 3 axes (x, y, z), and 10 segments each
+
+**Compression Performance on Real CAPTURE-24 Data**:
+- **Delta Encoding**: 
+  - 2.00× compression (perfectly consistent)
+  - Perfect reconstruction (0.000000 MSE)
+  - Fastest processing (0.21ms average)
+  - Minimal memory usage (0.01 MB)
+
+- **Run-Length Encoding**: 
+  - 11.36× average compression (highly variable: 0.67× to 2,222×)
+  - Perfect reconstruction (0.000000 MSE)
+  - Excellent for rest/sleep periods (up to 2,222× compression)
+  - Poor for active movement (0.67× expansion)
+  - Fast processing (6.17ms average)
+
+- **Quantization (8-bit)**: 
+  - 8.00× compression (perfectly consistent)
+  - Minimal quality loss (0.000046 MSE average)
+  - SNR range: -2.2 to 76.9 dB (mean: 37.6 dB)
+  - Higher processing time (includes quantizer fitting)
+
+**Key Discovery**: Run-Length Encoding shows dramatically different performance on real data compared to synthetic data, with excellent compression during rest periods (up to 2,222×) but poor performance during active movement. This validates the importance of real-world evaluation and opens opportunities for activity-aware hybrid compression.
+
+**Complete Results**: See `docs/MILESTONE2.md` and `results/evaluation/milestone2_report_ALL_PARTICIPANTS.md` for detailed analysis.
 
 ## Contributing
 

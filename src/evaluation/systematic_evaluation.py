@@ -21,12 +21,10 @@ import json
 from dataclasses import dataclass, asdict
 import sys
 
+from src.compressors import DeltaEncodingCompressor, RunLengthCompressor, QuantizationCompressor
+
 # Add src to path for imports
 sys.path.append(str(Path(__file__).parent.parent.parent))
-
-from compressors.delta_encoding import DeltaEncodingCompressor
-from compressors.run_length import RunLengthCompressor
-from compressors.quantization import QuantizationCompressor
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

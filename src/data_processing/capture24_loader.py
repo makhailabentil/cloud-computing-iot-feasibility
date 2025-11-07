@@ -92,6 +92,7 @@ class Capture24Loader:
         # Try different file formats
         possible_files = [
             self.data_dir / f"{participant_id}.csv",
+            self.data_dir / f"{participant_id}.csv.gz",
             self.data_dir / f"{participant_id}_accel.csv",
             self.data_dir / f"{participant_id}.parquet",
             self.data_dir / participant_id / "accel.csv",
@@ -112,13 +113,14 @@ class Capture24Loader:
         logger.info(f"Loading data for participant {participant_id} from {data_file}")
         
         # Load data based on file extension
-        if data_file.suffix == '.csv':
-            df = pd.read_csv(data_file)
+        # handle compressed CSVs (.csv or .csv.gz)
+        if data_file.suffix in ['.csv', '.gz', '.csv.gz']:
+            df = pd.read_csv(data_file, compression='infer')
         elif data_file.suffix == '.parquet':
             df = pd.read_parquet(data_file)
         else:
             raise ValueError(f"Unsupported file format: {data_file.suffix}")
-        
+
         # Handle different column naming conventions
         # Standardize to lowercase
         df.columns = df.columns.str.lower()
@@ -194,31 +196,40 @@ class Capture24Loader:
         logger.info(f"Loaded {self.metadata[participant_id]['n_samples']} samples for {participant_id}")
         
         return data
-    
-    def segment_data(self, data: np.ndarray, 
-                    window_size: int = 10000,
-                    overlap: int = 0) -> List[np.ndarray]:
+
+    def segment_data(self, data: np.ndarray,
+                     window_size: int = 10000,
+                     overlap: int = 0,
+                     min_gap_sec: float = 0,
+                     sampling_rate: float = 100.0) -> List[np.ndarray]:
         """
-        Segment time series data into manageable windows.
-        
+        Segment time series data into non-overlapping windows separated
+        by at least `min_gap_sec` seconds (default = 0.5 s).
+
         Args:
-            data: Input time series data
-            window_size: Size of each window in samples
-            overlap: Number of overlapping samples between windows
-            
+            data: Input time series data (1D numpy array)
+            window_size: Number of samples per segment
+            overlap: Overlap in samples between consecutive windows
+            min_gap_sec: Minimum spacing between the *end* of one
+                         segment and the *start* of the next, in seconds
+            sampling_rate: Sampling rate of the signal (Hz)
+
         Returns:
             List of data segments
         """
         segments = []
         step = window_size - overlap
-        
-        for i in range(0, len(data), step):
-            segment = data[i:i + window_size]
-            if len(segment) == window_size:  # Only include complete segments
-                segments.append(segment)
-        
+        gap = int(min_gap_sec * sampling_rate)  # convert seconds → samples
+        cursor = 0
+
+        while cursor + window_size <= len(data):
+            segment = data[cursor:cursor + window_size]
+            segments.append(segment)
+            # move cursor forward: end of this segment + gap
+            cursor += window_size + gap
+
         return segments
-    
+
     def get_participant_info(self, participant_id: str) -> Dict:
         """
         Get metadata for a specific participant.

@@ -194,3 +194,136 @@ After downloading, use `scripts/get_real_capture24_data.py` to convert the `.csv
 
 This is a research project for academic purposes. Please refer to the project documentation for contribution guidelines.
 
+## 🧪 Reproducing the End-to-End IoT Streaming Experiment
+
+This section explains how to replicate the **edge-to-cloud compression streaming setup** used in our IoT feasibility study. The experiment connects an **ESP32 device (running MicroPython)** to a **Flask-based cloud server**, which receives, logs, and analyzes compressed sensor data in real time.
+
+### System Architecture
+
+**Components:**
+1. **ESP32 (Edge Node)** — runs MicroPython scripts implementing:
+   - Delta Encoding, Run-Length Encoding, and Quantization compressors
+   - Multi-axis data streaming (x, y, z)
+   - Wi-Fi upload logic with JSON-based payloads
+
+2. **Flask Web Server (Cloud Endpoint)** — receives and logs uploads:
+   - `/upload`: stores compressed payloads and metadata
+   - `/participants` and `/segment/<idx>`: serve test data to ESP32
+   - Logs upload size, algorithm, and latency to `stream_compression_results.csv`
+
+3. **Capture-24 Data Loader (Ground Truth)** — provides real-world sensor data for ESP32 streaming simulation.
+
+---
+
+### 1. Setup the Cloud Server
+
+Run this on your **laptop or cloud instance**:
+
+```bash
+cd server/
+python server.py
+```
+
+**Default behavior:**
+- Starts Flask on `http://0.0.0.0:5001`
+- Loads CAPTURE-24 dataset from `../../data/capture24/`
+- Writes results to `stream_compression_results.csv` (auto-created)
+
+To test locally:
+```bash
+curl -X GET http://localhost:5001/participants
+```
+
+---
+
+### 2. Connect and Configure the ESP32
+
+Flash **MicroPython v1.26.0+** on your ESP32 and upload the following files:
+```
+rle_mpy.py
+delta_mpy.py
+quant_mpy.py
+main_mpy.py
+```
+
+Edit the **Wi-Fi and server configuration** inside `main_mpy.py`:
+
+```python
+SSID = "your_network_name"
+PASSWORD = "your_wifi_password"
+SERVER_IP = "your_computer_ip"  # same network as ESP32
+SERVER_PORT = 5001
+```
+
+Verify your network connection:
+```python
+>>> import network
+>>> wlan = network.WLAN(network.STA_IF)
+>>> wlan.active(True)
+>>> wlan.connect("your_network", "your_password")
+>>> wlan.ifconfig()
+```
+
+---
+
+### 3. Run the Streaming Experiment
+
+On the ESP32, run:
+
+```python
+import main
+```
+
+The device will:
+- Fetch segments from `/participant/<id>/segment/<idx>`
+- Apply all three compressors (Delta, RLE, Quantization)
+- POST results to `/upload`
+- Log timing and payload sizes for each algorithm
+
+Each iteration prints results like:
+
+```
+✅ Segment 12: 10000 samples/axis, 45 ms transfer
+Delta: total comp 8 ms | 3 axes
+⬆️ Delta upload (1123 B) → 134 ms → 200
+RLE: total comp 10 ms | 3 axes
+⬆️ RLE upload (687 B) → 140 ms → 200
+Quant: total comp 11 ms | 3 axes
+⬆️ Quant upload (902 B) → 156 ms → 200
+```
+
+---
+
+---
+
+### 5. Troubleshooting
+
+| Issue | Possible Fix |
+|-------|---------------|
+| `❌ GET failed: 404` | Segment index out of range → reduce `MAX_SEGMENTS` |
+| `Memory allocation failed` | Reduce `WINDOW_SIZE` or number of axes |
+| `❌ Upload failed` | Check IP connectivity (`ping <server_ip>`) |
+| No logs in CSV | Ensure Flask is running in the same subnet as ESP32 |
+
+---
+
+### 6. Extending the Experiment
+
+To extend or adapt:
+- Modify `main.py` to log **energy consumption** or **CPU load** on-device
+- Implement **adaptive switching** between algorithms based on activity level
+- Add Flask route for **real-time visualization** of incoming uploads
+- Deploy on **Raspberry Pi edge nodes** for multi-device testing
+
+---
+
+### 🎓 For A-TA Evaluation
+
+For successful reproduction:
+1. TA should see **live upload logs** in the Flask console (e.g., `[19:45:32] Upload Delta | P=P001 | Seg=0 | 3 axes | 892 bytes`)
+2. Verify that `stream_compression_results.csv` **grows with each upload**
+3. Confirm ESP32 prints upload timing for all three algorithms
+4. Optional: visualize upload size trends to confirm reproducibility
+
+This setup fully demonstrates **end-to-end feasibility** of lightweight compression and streaming from edge to cloud.
+

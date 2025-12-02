@@ -147,3 +147,25 @@ temp/
 # OS
 .DS_Store
 Thumbs.db
+
+# Assignment and exam files
+assignment_solutions_aligned.tex
+assignment_solutions_condensed.tex
+assignment_solutions.md
+assignment_solutions.tex
+cloud_computing_exam_notes.md
+final_report.tex
+cloud_computing_notes/
+cloud_computing_notes.docx
+
+# Mininet and firewall files
+firewall.py
+MININET_SETUP_COMPLETE.md
+MININET_TEST_COMMANDS.md
+setup_mininet_vm.sh
+mininet-vm.zip
+
+# Screenshots
+docs/Screenshot*.png
+
+# Keep visualization files (scripts/visualize_esp32.py, scripts/ESP32_VISUALIZATION_GUIDE.md, scripts/QUICK_START_VISUALIZATION.md, src/edge_gateway/server_capture24.py)

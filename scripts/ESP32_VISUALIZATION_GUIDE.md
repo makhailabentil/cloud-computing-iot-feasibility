@@ -4,9 +4,26 @@ This guide explains how to visualize data from your ESP32 streaming setup.
 
 ## Quick Start
 
+### 0. Generate Sample Data (For Testing Without ESP32)
+
+If you don't have the ESP32 hardware, you can generate sample data to test the visualizations:
+
+```bash
+# Generate sample data (50 segments by default)
+python scripts/generate_sample_esp32_data.py
+
+# Generate more segments for better visualization
+python scripts/generate_sample_esp32_data.py --segments 100
+
+# Use different participant ID
+python scripts/generate_sample_esp32_data.py --participant P002
+```
+
+This creates `stream_compression_results.csv` with realistic sample data that mimics ESP32 streaming behavior.
+
 ### 1. Basic Usage
 
-After running your ESP32 (`main.py`), visualize the collected data:
+After running your ESP32 (`main.py`) or generating sample data, visualize the collected data:
 
 ```bash
 # Show summary statistics and plots

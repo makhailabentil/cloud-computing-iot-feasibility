@@ -421,14 +421,20 @@ def main():
     
     if args.summary or args.all:
         save_path = f"{args.save}/summary.png" if args.save else None
+        if save_path:
+            Path(args.save).mkdir(parents=True, exist_ok=True)
         viz.plot_performance_summary(save_path=save_path)
     
     if args.timeseries or args.all:
         save_path = f"{args.save}/timeseries.png" if args.save else None
+        if save_path:
+            Path(args.save).mkdir(parents=True, exist_ok=True)
         viz.plot_time_series(save_path=save_path)
     
     if args.comparison or args.all:
         save_path = f"{args.save}/comparison.png" if args.save else None
+        if save_path:
+            Path(args.save).mkdir(parents=True, exist_ok=True)
         viz.plot_algorithm_comparison(save_path=save_path)
     
     if args.interactive:

@@ -1,5 +1,22 @@
 # Quick Start: ESP32 Visualization
 
+## Generate Sample Data (For Testing Without ESP32)
+
+If you don't have the ESP32 hardware, you can generate sample data to test the visualizations:
+
+```bash
+# Generate sample data (30 segments, creates stream_compression_results.csv)
+python scripts/generate_sample_esp32_data.py
+
+# Generate more segments
+python scripts/generate_sample_esp32_data.py --segments 100
+
+# Use different participant ID
+python scripts/generate_sample_esp32_data.py --participant P002
+```
+
+This creates realistic sample data that mimics ESP32 streaming behavior, allowing you to test all visualization features.
+
 ## Option 1: Python Script (Recommended for Analysis)
 
 ```bash

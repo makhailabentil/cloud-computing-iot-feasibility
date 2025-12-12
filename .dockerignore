@@ -1,0 +1,91 @@
+# Exclude large directories not needed for cheatsheet_generator
+data/
+external/
+docs/
+scripts/
+esp32/
+results/
+src/
+tests/
+uploads/
+outputs/
+cloud_computing_notes/
+
+# Exclude all image files (users upload these, not needed in build)
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+*.tif
+*.webp
+*.svg
+
+# Exclude large files
+*.zip
+*.pdf
+*.tex
+mininet-vm.zip
+
+# Exclude test and working files
+test_*
+working_*
+cloud_computing_*
+
+# Exclude Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+*.egg
+*.egg-info
+dist/
+build/
+.pytest_cache/
+
+# Exclude IDE files
+.git/
+.gitignore
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Exclude environment files
+.env
+.venv/
+venv/
+env/
+
+# Exclude documentation (except cheatsheet_generator README)
+*.md
+!cheatsheet_generator/**/*.md
+# Exclude problematic markdown files with permission issues
+cheatsheet_generator/QUICKSTART.md
+cheatsheet_generator/README.md
+
+# Exclude other root-level files we don't need
+*.csv
+*.json
+!cheatsheet_generator/**/*.json
+*.log
+*.tmp
+*.yaml
+*.yml
+!docker-compose.yml
+*.sh
+*.bat
+!cheatsheet_generator/**/*.bat
+!cheatsheet_generator/**/*.sh
+
+# Exclude root-level Python files (except start_web_server.py)
+convert_*.py
+fix_*.py
+firewall.py
+download_*.py
+
+# Node modules
+node_modules/

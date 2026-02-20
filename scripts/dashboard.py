@@ -185,12 +185,12 @@ DASHBOARD_HTML = """
 </head>
 <body>
     <div class="container">
-        <h1>🚀 IoT Compression Feasibility Study</h1>
-        <p class="subtitle">Comprehensive Results Dashboard - Milestones 2 & 3</p>
+        <h1>IoT Compression Feasibility Study</h1>
+        <p class="subtitle">Comprehensive Results Dashboard</p>
 
         <!-- Milestone 2 Summary -->
         <div class="section">
-            <h2>📊 Milestone 2: Full CAPTURE-24 Evaluation (151 Participants)</h2>
+            <h2>Full CAPTURE-24 Evaluation (151 Participants)</h2>
             <div class="stats-grid" id="milestone2-stats">
                 <div class="stat-card">
                     <h3>Participants</h3>
@@ -225,7 +225,7 @@ DASHBOARD_HTML = """
 
         <!-- Milestone 3: Activity Detection -->
         <div class="section">
-            <h2>🎯 Milestone 3: Activity-Aware Adaptive Compression</h2>
+            <h2>Activity-Aware Adaptive Compression</h2>
             <div class="stats-grid" id="activity-stats">
                 <div class="stat-card">
                     <h3>Activities Detected</h3>
@@ -258,10 +258,7 @@ DASHBOARD_HTML = """
 
         <!-- Milestone 3: Hybrid Methods -->
         <div class="section">
-            <h2>🔗 Milestone 3: Hybrid Compression Methods (FIXED!)</h2>
-            <div class="info-box" style="background: #d4edda; border-left-color: #28a745;">
-                <strong>✅ Fixed:</strong> Quantization issues resolved! All hybrid methods now working.
-            </div>
+            <h2>Hybrid Compression Methods</h2>
             <div class="stats-grid" id="hybrid-stats">
                 <div class="stat-card">
                     <h3>Delta + RLE</h3>
@@ -271,7 +268,7 @@ DASHBOARD_HTML = """
                 <div class="stat-card">
                     <h3>Delta + Quant</h3>
                     <div class="value" id="hybrid-delta-quant">-</div>
-                    <div class="label">Compression Ratio (Best!)</div>
+                    <div class="label">Compression Ratio</div>
                 </div>
                 <div class="stat-card">
                     <h3>Quant + Delta</h3>
@@ -291,7 +288,7 @@ DASHBOARD_HTML = """
 
         <!-- Milestone 3: Multi-Axis Strategies -->
         <div class="section">
-            <h2>📐 Milestone 3: Multi-Axis Compression Strategies</h2>
+            <h2>Multi-Axis Compression Strategies</h2>
             <div class="stats-grid" id="multiaxis-stats">
                 <div class="stat-card">
                     <h3>Joint Compression</h3>
@@ -321,20 +318,17 @@ DASHBOARD_HTML = """
 
         <!-- Milestone 3: Compressed Analytics -->
         <div class="section">
-            <h2>📈 Milestone 3: On-the-Fly Analytics on Compressed Data (FIXED!)</h2>
-            <div class="info-box" style="background: #d4edda; border-left-color: #28a745;">
-                <strong>✅ Fixed:</strong> Variance calculation now accurate! Error dropped from 1,600+ to 0.00.
-            </div>
+            <h2>On-the-Fly Analytics on Compressed Data</h2>
             <div class="stats-grid" id="analytics-stats">
                 <div class="stat-card">
                     <h3>Mean Error</h3>
                     <div class="value" id="analytics-mean-error">-</div>
-                    <div class="label">Average (Perfect!)</div>
+                    <div class="label">Average</div>
                 </div>
                 <div class="stat-card">
                     <h3>Variance Error</h3>
                     <div class="value" id="analytics-variance-error">-</div>
-                    <div class="label">Fixed!</div>
+                    <div class="label">Variance Error</div>
                 </div>
                 <div class="stat-card">
                     <h3>Anomalies Detected</h3>
@@ -354,11 +348,7 @@ DASHBOARD_HTML = """
 
         <!-- ESP32 Streaming Results -->
         <div class="section">
-            <h2>📡 ESP32 Hardware Streaming Results</h2>
-            <div class="info-box" id="esp32-info">
-                <strong>Note:</strong> ESP32 streaming data from <code>stream_compression_results.csv</code>. 
-                Run the ESP32 streaming demo to generate data.
-            </div>
+            <h2>ESP32 Hardware Streaming Results</h2>
             <div class="stats-grid" id="esp32-stats">
                 <div class="stat-card">
                     <h3>Total Uploads</h3>
@@ -431,7 +421,7 @@ DASHBOARD_HTML = """
                        (data.quant_ratio || 8.0).toFixed(2) + '×'],
                 textposition: 'auto'
             }], {
-                title: 'Compression Ratios - Milestone 2 (151 Participants)',
+                title: 'Compression Ratios (151 Participants)',
                 xaxis: { title: 'Algorithm' },
                 yaxis: { title: 'Compression Ratio' }
             });
@@ -441,7 +431,7 @@ DASHBOARD_HTML = """
                 y: [data.delta_mse || 0, data.rle_mse || 0, data.quant_mse || 0.000046],
                 type: 'bar',
                 marker: { color: ['#28a745', '#28a745', '#ffc107'] },
-                text: ['Perfect', 'Perfect', (data.quant_mse || 0.000046).toFixed(6)],
+                text: ['0.000000', '0.000000', (data.quant_mse || 0.000046).toFixed(6)],
                 textposition: 'auto'
             }], {
                 title: 'Reconstruction Quality (MSE)',
@@ -501,10 +491,10 @@ DASHBOARD_HTML = """
                 y: hybridValues,
                 type: 'bar',
                 marker: { color: '#f093fb' },
-                text: hybridValues.map(v => v > 0 ? v.toFixed(2) + '×' : 'Fixed!'),
+                text: hybridValues.map(v => v > 0 ? v.toFixed(2) + '×' : '-'),
                 textposition: 'auto'
             }], {
-                title: 'Hybrid Method Compression Ratios (FIXED!)',
+                title: 'Hybrid Method Compression Ratios',
                 xaxis: { title: 'Hybrid Method' },
                 yaxis: { title: 'Compression Ratio' }
             });
@@ -546,10 +536,10 @@ DASHBOARD_HTML = """
                 y: errorValues,
                 type: 'bar',
                 marker: { color: errorColors },
-                text: errorValues.map(v => v < 0.001 ? 'Perfect!' : v.toFixed(3)),
+                text: errorValues.map(v => v < 0.001 ? '0.000' : v.toFixed(3)),
                 textposition: 'auto'
             }], {
-                title: 'Compressed Analytics Error Analysis (FIXED!)',
+                title: 'Compressed Analytics Error Analysis',
                 xaxis: { title: 'Error Type' },
                 yaxis: { title: 'Error Value' }
             });
@@ -936,7 +926,7 @@ def api_esp32():
 
 if __name__ == '__main__':
     print("\n" + "="*60)
-    print("🚀 IoT Compression Feasibility Study - Dashboard")
+    print("IoT Compression Feasibility Study - Dashboard")
     print("="*60)
     print("\nDashboard available at: http://localhost:5000")
     print("API endpoints:")

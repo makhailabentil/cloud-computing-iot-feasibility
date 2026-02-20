@@ -129,9 +129,12 @@ dmypy.json
 .pyre/
 
 # Project specific
-data/
+data/*
+!data/.gitkeep
+!data/generations.json
 *.csv
 *.json
+!data/*.json
 *.log
 results/
 output/
@@ -169,3 +172,12 @@ mininet-vm.zip
 docs/Screenshot*.png
 
 # Keep visualization files (scripts/visualize_esp32.py, scripts/ESP32_VISUALIZATION_GUIDE.md, scripts/QUICK_START_VISUALIZATION.md, src/edge_gateway/server_capture24.py)
+# API key startup scripts (contain sensitive keys)
+START_WEB.bat
+START_WEB.sh
+cheatsheet_generator/START_WEB.bat
+cheatsheet_generator/START_WEB.sh
+
+# Environment variables (contains API keys)
+.env
+.env.local

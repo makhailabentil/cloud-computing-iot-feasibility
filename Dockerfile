@@ -1,10 +1,15 @@
 FROM python:3.11-slim
 
-# Install system dependencies including Tesseract OCR and LaTeX
+# Install system dependencies: Tesseract, LaTeX, and handanim (Cairo + git + ffmpeg)
 RUN apt-get update && apt-get install -y \
     tesseract-ocr \
     tesseract-ocr-eng \
     curl \
+    git \
+    build-essential \
+    libcairo2-dev \
+    pkg-config \
+    ffmpeg \
     texlive-latex-base \
     texlive-latex-extra \
     && rm -rf /var/lib/apt/lists/*
